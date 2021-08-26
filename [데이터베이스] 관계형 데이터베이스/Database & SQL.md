@@ -75,3 +75,38 @@ SELECT * FROM employee WHERE gender = 'F';
 
 + A 계좌로 이체 성공 -> 은행 서버 에러 -> A 계좌로 이체 기록은 영구적으로 유지
 + B 계좌로 이체 실패 -> 이제 요청 이전 상태로 회귀(롤백)
+
+
+## SQL 접속하기
+
+### 1. MySQL 설치
+패키지 매니저 Homebrew를 이용해 MySQL을 설치한다.
+
+#### Homebrew를 이용한 설치
+```js
+brew install mysql
+brew info mysql
+```
+
+### 2. MySQL 서비스 시작
+MySQL을 설치했다면, MySQL 프로그램을 실행해야 한다.
+그렇지 않으면 MySQL을 사용할 수 없다.
+
+macOS
+```js
+brew services start mysql
+```
+
+### 3. MySQL 접속
+다음의 명령어로 MySQL에 접속할 수 있다.
+```js
+mysql -u root
+```
+
+MySQL을 처음 설치하면, root의 암호는 비어 있다. Enter 키를 누르자.
+비밀번호를 설정하고 나면, 다음의 명령어로 MySQL에 접속해야 한다.
+
+```js
+// -u(계정 접근), -p(비밀번호)
+mysql -u root -p
+```
