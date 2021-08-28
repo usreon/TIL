@@ -110,3 +110,8 @@ MySQL을 처음 설치하면, root의 암호는 비어 있다. Enter 키를 누�
 // -u(계정 접근), -p(비밀번호)
 mysql -u root -p
 ```
+
+
+## 관련 스프린트 
++ Instagram Schema Desgin
++ Cmarket Datatbase
