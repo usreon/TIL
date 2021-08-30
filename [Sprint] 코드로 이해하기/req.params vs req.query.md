@@ -49,11 +49,15 @@ console.log(req.query); // { title : 'hello!' }
 + 요청 형식: JSON
   - MIME 타입: application/json
 
+#### [표] 파라미터 정보
+
 | parameter | 형식 | 설명 | 필수 포함 여부 |
 |:---:|:---:|:---:|:---:|
 |orders|배열|주문 아이템|필수|
 |totalPrice|숫자|주문 합계|필수|
-[표] 파라미터 정보
+
+
+#### [데이터] Request에 따른 Response 예시
 
 ```js
 {
@@ -68,7 +72,6 @@ console.log(req.query); // { title : 'hello!' }
 }
 ```
 [데이터] Request에 따른 Response 예시
-
 
 
 
