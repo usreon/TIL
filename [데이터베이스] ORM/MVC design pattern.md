@@ -1,7 +1,20 @@
 ## 계속 까먹는 model, controller, migration, DB 정리하기
 
+### MVC의 탄생
+MVC가 유행하기 전, 웹 개발은 데이터, 로직, 출력이 한 군데 섞여 있었다. 하지만 화면, 로직, 데이터가 한 데 엮여 유지보수가 너무 어려워지는 문제가 생긴다. 그래서 화면, 로직, 데이터를 분리하자는 아이디어가 나온다. 이게 바로 MVC이다. 이런식으로 개별 기능을 분리하는 이유는 점점 더 복잡해지는 현대 웹 개발에서 가능한 느슨하게 기능을 분리함으로써 수정에 강한 구조를 만들어내고자 하기 위함이다.
 
-### MVC를 통해 이해하기
+### MVC
+MVC는 Model View Controller의 약자로 개발을 할 때 각 파일의 역할을 나누는 프로그래밍 패턴을 말한다.
+
++ Model : 데이터를 저장하고, 읽어오고, 삭제한다.
+  - 데이터 처리 및 비지니스 로직은 모델이 전담한다.
++ View : 사용자와 인터렉션을 하는 화면을 나타낸다.
++ Controller : 모델과 뷰 사이에 존재하며, 클라이언트의 요청을 받아서 어떤 모델(들)을 호출해서 데이터를 처리하고, 어떤 뷰를 호출해서 클라이언트에게 응답을 내보낼 것인지 결정한다.
+  - 입력 로직과 화면 로직은 컨트롤러가 전담한다.
+
+
+
+### 예시를 통해 이해하기
 1. 사용자가 웹사이트에 접속한다. (User)
 2. Controller는 사용자가 요청한 웹페이지를 제공하기 위해서 Model에서 데이터를 호출한다.
 3. Model은 데이터베이스나 파일과 같은 데이터 소스를 제어한 후에 그 결과를 리턴한다.
@@ -15,8 +28,6 @@
 
 이 컨트롤러는 이제 데이터 베이스와 연결이 되어야하기 때문에, 데이터 베이스랑 관련된 로직을 처리하는 곳인 모델(DB와 소통 = sequelize ORM)과 소통을 한다.
 
-#### ORM : 관계형 db랑 object를 연결해주는 매개체
-`즉 orm은 모델을 기술하는 도구이다.`
 
 ### 모델 vs 컨트롤러
 CRUD는 대부분의 컴퓨터 소프트웨어가 가지는 기본적인 데이터 처리 기능인 Create, Read, Update, Delete를 묶어서 일컫는 말이다. 즉, 데이터 베이스는 CRUD가 가능해야 한다.
@@ -29,97 +40,36 @@ CRUD는 대부분의 컴퓨터 소프트웨어가 가지는 기본적인 데이�
 const db = require("../db");
 
 module.exports = {
-  orders: {
-    get: (userId, callback) => {
-      // 해당 유저가 작성한 모든 주문을 가져오는 함수
-      let sql = `SELECT * FROM ...`
-
-      db.query(sql, (err, result) => {
-       ...
-    },
-    post: (userId, orders, totalPrice, callback) => {
-      // 해당 유저의 주문 요청을 데이터베이스에 생성하는 함수
-      let sql1 = `INSERT INTO orders (user_id, total_price) VALUES ?`;
-      let sql2 = `INSERT INTO order_items (order_id,item_id, order_quantity) VALUES ?`;
-
-
-      db.query(sql1, [params1], (err, result) => {
-        ...
-
   items: {
     get: (callback) => {
       // 모든 상품을 가져오는 함수
       const queryString = `SELECT * FROM items`;
 
       db.query(queryString, (err, result) => {
-       ...
+        if (err) res.status(404).send('Not found');
+        res.status(200).json(result);
+      },
     },
-  },
-};
+  };
+}
 ```
 
 
-
 #### Controller code
-
 
 ```js
 const models = require('../models');
 
 module.exports = {
-  orders: {
-    get: (req, res) => {
-      const userId = req.params.userId;
-
-      if (!userId) {
-        return res.status(401).send('Unauthorized user.');
-      } else {
-        models.orders.get(Number(userId), (error, result) => {
-          if (error) {
-            res.status(404).send('No orders found.');
-          } else {
-            res.status(200).json(result);
-          }
-        });
-      }
-    },
-    post: (req, res) => {
-      const userId = req.params.userId;
-      const { orders, totalPrice } = req.body;
-
-      if (orders.length === 0) {
-        return res.status(400).send('Bad request.');
-      } else {
-        models.orders.post(Number(userId), orders, totalPrice, (error, result) => {
-          if (error) {
-            res.status(404).send('Not found');
-          } else {
-            res.status(201).send('Order has been placed.');
-          }
-        });
-      }
-    }
-  },
   items: {
     get: (req, res) => {
-      models.items.get((error, result) => {
-        if (error) {
-          res.status(404).send('Not found');
-        } else {
-          res.status(200).json(result);
+      models.items.get((err, result) => {
+        if (err) res.status(404).send('Not found');
+        res.status(200).json(result);
         }
       });
     }
-  }
-};
+  };
 ```
 
-
-
-### 모델 vs 마이그레이션
-시퀄라이즈로 모델을 생성하면 마이그레이션이 생긴다. 마이그레이션은 데이터베이스의 설계도(스키마 디자인같은)라고 생각하면 된다. 그럼 마이그레이션만 필요하지 않을까? 왜 모델까지 만드는 걸까?
-
-자바스크립트 문법에서 DB에서 정보를 가져오거나 추가하거나 삭제하는 로직을 작성해야 되는데(DB를 컨트롤할 수 있는 문법) 그걸 사용할 수 있게 모델이 매개체가 되는 것이다. 따라서 모델은 데이터 베이스랑 관련된 로직을 자바스크립트 언어로 처리하는 곳이라고 볼 수 있다. 데이터 베이스의 변화가 생기면 두 파일 다 수정해줘야 한다.
-
-처음에는 DB가 모델에 존재하는지 알았는데 아니었다.. 그냥 데이터 베이스는 우리 컴퓨터 어딘가 이를 테면 하드 디스크 같은 곳에 있다고 한다.
 
