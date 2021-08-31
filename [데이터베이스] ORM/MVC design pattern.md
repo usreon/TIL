@@ -29,13 +29,16 @@ MVC는 Model View Controller의 약자로 개발을 할 때 각 파일의 역할
 이 컨트롤러는 이제 데이터 베이스와 연결이 되어야하기 때문에, 데이터 베이스랑 관련된 로직을 처리하는 곳인 모델(DB와 소통 = sequelize ORM)과 소통을 한다.
 
 
+#### pseudo code
+![MVC 코드로 이해하기](../img/mvcCode.png)
+
+
 ### 모델 vs 컨트롤러
 CRUD는 대부분의 컴퓨터 소프트웨어가 가지는 기본적인 데이터 처리 기능인 Create, Read, Update, Delete를 묶어서 일컫는 말이다. 즉, 데이터 베이스는 CRUD가 가능해야 한다.
 
 자바스크립트 안에서 데이터베이스에서 정보를 가져오거나 추가 또는 삭제를 하는 로직을 작성해야 하는데 그걸 사용할 수 있도록 모델이 매개체가 되는 거다.
 
 #### Model code
-
 ```js
 const db = require("../db");
 
