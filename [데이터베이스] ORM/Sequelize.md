@@ -64,8 +64,9 @@ npx sequelize-cli db:migrate:undo
 
 
 
-## Sequelize Query
-SQL문 대신에 ORM을 사용하여 sequelize에서는 어떻게 쿼리문을 보내는지 확인해 보자.
+## Sequelize methods 
+Sequelize provides various methods to assist querying your database for data. <Br>
+공식 문서에 의하면 sequelize에서는 쿼리를 지원해주는 메소드가 있다고 한다. SQL 사용 대신에 ORM을 사용하여 sequelize에서는 어떻게 메소드로 쿼리문을 작성하는지 확인해 보자.
 
 ### INSERT
 
