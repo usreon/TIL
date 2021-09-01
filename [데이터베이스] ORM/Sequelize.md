@@ -69,6 +69,33 @@ Sequelize provides various methods to assist querying your database for data. <B
 공식 문서에 의하면 sequelize에서는 쿼리를 지원해주는 메소드가 있다고 한다. SQL 사용 대신에 ORM을 사용하여 sequelize에서는 어떻게 메소드로 쿼리문을 작성하는지 확인해 보자.
 
 ### INSERT
+#### findOrCreate
+특정 요소를 검색해 값이 존재하면 해당 인스턴스를 반환하고 아니면 값을 생성한다.<br>
+두 가지 값을 반환하는데, 첫번째는 객체를 포함한 배열이고 두번째는 `boolean`  값이다. 새 객체를 생성했으면 true, 원래 값이 있는 경우는 false를 나타낸다.
+```js
+try {
+  const [result, created] = await models.url.findOrCreate({
+    where : {url},
+    default: {title}
+    })
 
+  if (created) { // 인스턴스를 생성했으면 
+    return res.status(201).json(result)
+  }
+  res.status(201).json(result)
+}
+```
 ### SELECT
-
+#### findAll() 
+모든 데이터를 불러온다.
+```js
+get: async (req, res) => {
+    const data = await models.url.findAll()
+    res.status(200).json(data);
+}
+```
+#### findOne({ where : { 조건 }})
+조건에 맞는 데이터를 불러온다.
+```js
+const url = await models.url.findOne({ where : { id : id } })
+```
