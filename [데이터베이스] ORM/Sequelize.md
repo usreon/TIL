@@ -99,3 +99,17 @@ get: async (req, res) => {
 ```js
 const url = await models.url.findOne({ where : { id : id } })
 ```
+
+### UPDATE
+#### update()
+데이터를 수정한다. <br>
+첫 번째 인자로 수정할 데이터를, 두 번째 인자로 조건을 전달하면 된다.
+```js
+try {
+    await url.update({ visits : url.visits +1}) 
+    // 이미 조건으로 걸러진 url 변수를 받아온 것이라서 조건은 생략하였다.
+    // 업데이트 된 값을 send 하는 게 아니고 그냥 업데이트만 시켜줘야 해서 변수에 담지 않았다.
+    const redirectUrl = url.url;
+    res.status(302).redirect(redirectUrl)
+}
+```
