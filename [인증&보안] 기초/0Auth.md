@@ -41,5 +41,5 @@ scope는 토큰의 권한을 정의한다. 주어진 액세스 토큰을 사용�
 
 
 ### 0Auth logic flow
-![0auth1]('../img/0auth2.png')
-![0auth]('../img/0auth.jpeg')
+![0auth1](../img/0auth2.png)
+![0auth](../img/0auth.jpeg)
