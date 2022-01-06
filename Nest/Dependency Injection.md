@@ -139,3 +139,58 @@ DIP의 대표적인 예제인 자동차와 스노우타이어가 있다. 현재�
 여기서 타이어는 저수준 모듈보다는 고수준 모듈인 자동차 입장에서 만들어지는데, 이것은 고수준 모듈이 저수준 모듈에 의존했던 상황이 역전되어 저수준 모듈이 고수준 모듈에 의존하게 된다는 것을 의미한다. 이런 맥락에서 이 원칙의 이름은 의존 역전 원칙이다.
 
 다만, 소스 코드의 의존은 자동차가 '타이어'를 의존하지만, 런타임에서의 객체 의존은 타이어가 아니라 하위 타이어 중 하나를 의존한다. 따라서, 의존 역전 원칙은 런타임에서의 의존을 역전시키는 것이 아니라 소스 코드 단계에서의 의존을 역전시킨다는 것을 유의해야 한다.
+
+
+## 결합성을 낮춰주는 의존성 주입
+### 의존성 주입이 없을 때
+```js
+import { Controller, Get, Post } from '@nestjs/common';
+import { AppService } from './app.service';
+
+@Controller('abc') 
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get('hello') 
+  getHello(): string {
+    return new AppService().getHello();
+```
+
+이미 코드에 `return` 값이 `new AppService().getHello()`로 고정되어있기 때문에, 테스트를 하려면 `return`값을 `new TestAppService().getHello();`로 변경해야 되는 번거로움이 있다.
+
+또한 객체를 내부에서 만들어서 부모 객체에 의존하기 때문에 결합성이 강해져 단일 책임분리에 어긋난다. 따라서 `DI`를 활용해 객체를 밖에서 만들어 넘겨줌으로써 결합성을 낮춰줄 수 있다.
+
+### DI 예시
+
+하지만, DI를 적용해서 `this.appService.getHello()`를 쓴다면
+```js
+import { Controller, Get, Post } from '@nestjs/common';
+import { AppService } from './app.service';
+import { TestAppService } from './app.service';
+
+@Controller('abc') 
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get('hello') 
+  getHello(): string {
+    return this.appService.getHello();
+  }
+
+new AppController(new AppService()); // 실제 환경
+new AppController(new TestAppService()); // 테스트 환경
+```
+이런 식으로 코드를 작성하여 환경에 따라 테스트 할 수 있다. 코드의 재사용성과 활용성이 높아지는 장점이 있다.
+
+
+#### 더보기
+```js
+function a (b,c) {
+  return b + c;
+}
+```
+조금 더 쉬운 예를 들자면, DI를 적용하지 않은 코드는 
+`b + c`가 아닌 `5 + c`로 고정된 값을 받는 것과 같다.
+`this.appService...`는 매개변수와 같은 역할을 해준다. 
+`DI`를 통해서 인자가 고정되지 않고 매개변수를 활용하여 결합성을 낮춘다.
+
