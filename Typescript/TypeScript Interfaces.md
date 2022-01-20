@@ -1,3 +1,5 @@
+> [TypeScript Tutorial For Beginners: Your Friendly Guide](https://www.valentinog.com/blog/typescript/)문서를 번역하였습니다.
+
 # TypeScript Interfaces
 TypeScript interfaces are one of the most powerful construct of the language. Interfaces help in shaping "models" across your application so that any developer can pick that shape and conform to it when writing code.
 
@@ -110,4 +112,69 @@ error TS2339: Property 'url' does not exist on type 'object'.
 왜냐하면 Javascript 객체에는 url이란 이름을 가진 property가 없기 때문이다.
 여기서 중요한 점은, properties를 랜덤으로 object에 할당할 수 없다. 이는 TypeScript는 코드의 모든 엔터티가 특정 shape을 준수할 것을 예상하고 있기 때문이다. 그리고 타입스크립트에서 그 shape은 이름을 가지고 있는데 바로 **interface**이다.
 
+### interface
+타입스크립트에서 interface는 계약과 같다. 또는 entity를 위한 model로 볼 수 있다.
 
+```ts
+interface Link {
+    url : string;
+}
+```
+코드를 살펴보면 모양이 다음 패턴(문자열 유형 의 url 속성이 있어야 합니다.)을 따라야 하는 객체에 대해 Link라는 간단한 "모델"이라고 생각할 수 있다.
+TypeScript에서는 위와 같이 인터페이스를 사용하여 "모델"을 정의한다.
+
+이제 인터페이스를 사용하여 파라미터의 type을 지정할 수 있다.
+```ts
+function filterByTerm(input: Array<Link>, searchTerm: string) {
+    // omitted
+}
+```
+
+complete code :
+```ts
+interface Link { // 인터페이스 정의 후 
+  url: string;
+}
+
+function filterByTerm(input: Array<Link>, searchTerm: string) { // input의 타입으로 지정 Array<Link>
+  if (!searchTerm) throw Error("searchTerm cannot be empty");
+  if (!input.length) throw Error("input cannot be empty");
+  const regex = new RegExp(searchTerm, "i");
+  return input.filter(function(arrayElement) {
+    return arrayElement.url.match(regex);
+  });
+}
+
+filterByTerm(
+  [{ url: "string1" }, { url: "string2" }, { url: "string3" }],
+  "java"
+);
+```
+
+이제 인터페이스에 대해 조금 더 자세히 알아보도록 하자
+
+## interfaces and fields
+TypeScript 인터페이스는 언어의 가장 강력한 구성 중 하나이다. 인터페이스는 애플리케이션 전체에서 "모델"을 형성하는 데 도움을 주고(여기서 DB의 실제 모델이 아니고 중간 역할을 하게 도와주는 model이라고 이해하면 편하다), 모든 개발자가 코드를 작성할 때 해당 모양을 선택하고 준수할 수 있도록 해준다.
+
+인터페이스에 더 많은 필드를 추가하려면 블록 내에서 필드를 선언하면 된다.
+```ts
+interface Link {
+  description: string;
+  id: number;
+  url: string;
+}
+```
+
+이제 Link 유형의 모든 개체는 새 필드를 "구현"해야 한다. 그렇지 않으면 오류가 발생한다. 
+이대로 run을 하게된다면 아래와 같은 error 메세지를 만날 것이다.
+
+```
+error TS2739: Type '{ url: string; }' is missing the following properties from type 'Link': description, id
+```
+
+```ts
+filterByTerm(
+  [{ url: "string1" }, { url: "string2" }, { url: "string3" }],
+  "java"
+);
+```
